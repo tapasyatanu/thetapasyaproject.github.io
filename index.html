@@ -140,7 +140,7 @@
      ===================================================================== -->
 <script>
 const SITE = {
-  tagline: "In search of one photograph.",
+  tagline: "In search of that one photograph.",
 
   // The photo that appears inside the opening frame. Pick your strongest wide shot.
   cover:   "https://picsum.photos/id/1036/2400/1600",
@@ -151,13 +151,14 @@ const SITE = {
     ["Hi, I'm Tapasya."],
     ["I want to take a photograph."],
     ["Just one."],
-    ["I haven't found that frame yet.", "small"],
+    ["But I haven't found that frame...yet.", "small"],
     ["So until I do — and I will —", "small"],
-    ["I'll keep clicking.", "small"],
-    ["Here's to the search.", "final"],
+    ["I'll keep searching.", "small"],
+    ["Here's that search manifest." "small"],
+    ["Here's the tapasya project.", "final"],
   ],
 
-  galleryTitle: "The search so far.",
+  galleryTitle: "So far...",
 
   endTitle: "Still looking.",
   endText:  "The frame is out there. Here's to the journey.",
@@ -252,7 +253,7 @@ $('count').textContent = `${PHOTOS.length} frames. And counting.`;
 $('endTitle').textContent = SITE.endTitle;
 $('endText').textContent = SITE.endText;
 if (SITE.contact) { $('contact').href = SITE.contact; $('contact').textContent = SITE.contactLabel; } else $('contact').remove();
-$('copy').textContent = `© ${new Date().getFullYear()} Tapasya`;
+$('copy').textContent = `© ${new Date().getFullYear()} Tapasyatanu Dash`;
 SITE.story.forEach(([line, cls]) => {
   const p = document.createElement('p'); p.textContent = line; if (cls) p.className = cls; $('story').appendChild(p);
 });
