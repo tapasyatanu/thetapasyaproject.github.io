@@ -2,120 +2,285 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>My Photos</title>
+<meta name="theme-color" content="#000000">
+<title>the tapasya project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root { --gap: 6px; --row: 280px; }
+  :root {
+    --black: #000;
+    --white: #f5f5f7;
+    --grey: #86868b;
+    --dim: #424245;
+    --blue: #2997ff;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Helvetica Neue", sans-serif;
+    --gap: 12px;
+    --row: 320px;
+    --radius: 18px;
+    --ease: cubic-bezier(.25,.1,.25,1);
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #111; color: #eee; font-family: -apple-system, system-ui, sans-serif; }
-  header { padding: 32px 16px 20px; text-align: center; }
-  header h1 { font-weight: 300; letter-spacing: .15em; text-transform: uppercase; font-size: 1.4rem; }
-  header p { color: #888; margin-top: 6px; font-size: .9rem; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: var(--font); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  a { color: inherit; text-decoration: none; }
 
-  /* Justified grid: each photo grows in proportion to its aspect ratio */
-  .gallery { display: flex; flex-wrap: wrap; gap: var(--gap); padding: 0 var(--gap) var(--gap); }
-  .gallery::after { content: ""; flex-grow: 999999; }   /* stops the last row stretching */
-  .tile { position: relative; height: var(--row); flex-grow: 1; cursor: zoom-in; background: #222; overflow: hidden; }
-  .tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+  /* ---------- Nav: frosted glass ---------- */
+  .nav { position: fixed; inset: 0 0 auto 0; z-index: 10; height: 48px;
+         background: rgba(22,22,23,.72); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
+         border-bottom: 1px solid rgba(255,255,255,.06); }
+  .nav .in { max-width: 1024px; height: 100%; margin: 0 auto; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; }
+  .nav .brand { font-size: 17px; font-weight: 600; letter-spacing: -.02em; }
+  .nav nav a { font-size: 12px; color: rgba(245,245,247,.8); margin-left: 28px; transition: color .3s; }
+  .nav nav a:hover { color: #fff; }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; text-align: center; overflow: hidden; padding: 0 22px 12vh; }
+  .hero .bg { position: absolute; inset: 0; }
+  .hero .bg img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity 1.8s var(--ease), transform 2.6s var(--ease); }
+  .hero .bg img.ready { opacity: 1; transform: scale(1); }
+  .hero .bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.15) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,.55) 75%, #000 100%); }
+  .hero h1, .hero p { position: relative; }
+  .hero h1 { font-size: clamp(48px, 9vw, 112px); font-weight: 700; letter-spacing: -.045em; line-height: 1.02; }
+  .hero p { font-size: clamp(21px, 2.6vw, 28px); font-weight: 500; letter-spacing: -.01em; color: rgba(245,245,247,.86); margin-top: 14px; }
+
+  /* ---------- Story: lines light up as you scroll ---------- */
+  .story { max-width: 980px; margin: 0 auto; padding: 22vh 22px 18vh; }
+  .story p { font-size: clamp(36px, 6vw, 72px); font-weight: 600; letter-spacing: -.035em; line-height: 1.12; color: var(--dim); transition: color .7s var(--ease); margin-bottom: .32em; }
+  .story p.lit { color: var(--white); }
+  .story p.small { font-size: clamp(24px, 3.4vw, 40px); }
+  .story p.final { margin-top: 1.1em; }
+  .story p.final.lit { background: linear-gradient(90deg, #f5f5f7 0%, #a1a1a6 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* ---------- Section head ---------- */
+  .head { max-width: 1024px; margin: 0 auto; padding: 0 22px 40px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .head h2 { font-size: clamp(40px, 5.6vw, 64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; }
+  .head span { font-size: 17px; color: var(--grey); padding-bottom: 8px; }
+
+  .fade { opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+  .fade.in { opacity: 1; transform: none; }
+
+  /* ---------- Gallery ---------- */
+  .gallery { max-width: 1440px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: var(--gap); padding: 0 var(--gap); }
+  .gallery::after { content: ""; flex-grow: 999999; }
+  .tile { height: var(--row); flex-grow: 1; overflow: hidden; border-radius: var(--radius); background: #1d1d1f; cursor: zoom-in; }
+  .tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .8s var(--ease); }
   .tile:hover img { transform: scale(1.03); }
-  @media (max-width: 700px) { :root { --row: 160px; --gap: 3px; } }
 
-  /* Lightbox */
-  .lb { position: fixed; inset: 0; background: rgba(0,0,0,.95); display: none; align-items: center; justify-content: center; z-index: 10; }
-  .lb.open { display: flex; }
-  .lb img { max-width: 94vw; max-height: 88vh; object-fit: contain; }
-  .lb button { position: absolute; background: none; border: 0; color: #fff; font-size: 2.4rem; padding: 16px; cursor: pointer; opacity: .7; }
-  .lb button:hover { opacity: 1; }
-  .lb .close { top: 4px; right: 8px; }
-  .lb .prev { left: 4px; top: 50%; transform: translateY(-50%); }
-  .lb .next { right: 4px; top: 50%; transform: translateY(-50%); }
-  .lb .cap { position: absolute; bottom: 14px; width: 100%; text-align: center; color: #aaa; font-size: .9rem; }
+  /* ---------- Ending ---------- */
+  .end { text-align: center; padding: 26vh 22px 22vh; }
+  .end h2 { font-size: clamp(44px, 7.4vw, 96px); font-weight: 700; letter-spacing: -.045em; line-height: 1.04; }
+  .end p { font-size: clamp(19px, 2.2vw, 24px); color: var(--grey); margin-top: 18px; letter-spacing: -.01em; }
+  .end a { display: inline-block; margin-top: 36px; font-size: 17px; color: var(--blue); }
+  .end a:hover { text-decoration: underline; }
+
+  footer { border-top: 1px solid #1d1d1f; max-width: 1024px; margin: 0 auto; padding: 22px; display: flex; justify-content: space-between; font-size: 12px; color: var(--grey); }
+
+  /* ---------- Lightbox ---------- */
+  .lb { position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,.96); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+        display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .35s var(--ease); }
+  .lb.open { opacity: 1; pointer-events: auto; }
+  .lb img { max-width: 92vw; max-height: 80vh; object-fit: contain; border-radius: 12px; transition: opacity .3s var(--ease), transform .4s var(--ease); }
+  .lb img.fading { opacity: 0; transform: scale(.985); }
+  .lb .cap { margin-top: 18px; font-size: 14px; color: var(--grey); min-height: 1.2em; }
+  .lb .btn { position: absolute; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255,255,255,.12); color: #fff; font: 400 22px/44px var(--font); cursor: pointer; transition: background .25s; }
+  .lb .btn:hover { background: rgba(255,255,255,.22); }
+  .lb .close { top: 20px; right: 20px; font-size: 18px; }
+  .lb .prev { left: 20px; top: 50%; transform: translateY(-50%); }
+  .lb .next { right: 20px; top: 50%; transform: translateY(-50%); }
+  .lb .num { position: absolute; top: 32px; left: 0; right: 0; text-align: center; font-size: 12px; color: var(--grey); letter-spacing: .02em; pointer-events: none; }
+
+  @media (max-width: 734px) {
+    :root { --row: 180px; --gap: 6px; --radius: 12px; }
+    .nav nav a { margin-left: 18px; }
+    .lb .prev, .lb .next { display: none; }
+    footer { flex-direction: column; gap: 6px; text-align: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+    .fade { opacity: 1; transform: none; } .story p { color: var(--white); }
+  }
 </style>
 </head>
 <body>
-<header>
-  <h1>My Photos</h1>
-  <p>A collection</p>
-</header>
 
-<main class="gallery" id="gallery"></main>
-
-<div class="lb" id="lb">
-  <button class="close" aria-label="Close">&times;</button>
-  <button class="prev" aria-label="Previous">&#8249;</button>
-  <img id="lbImg" alt="">
-  <button class="next" aria-label="Next">&#8250;</button>
-  <div class="cap" id="lbCap"></div>
-</div>
-
+<!-- =====================================================================
+     EDIT HERE — everything you'll want to change lives in this block.
+     ===================================================================== -->
 <script>
-/* ============ EDIT THIS LIST ============
-   Put your photos in a "photos" folder next to this file,
-   then list them here, e.g. { src: "photos/beach.jpg", caption: "Goa, 2025" }
-   Sizes and orientations are detected automatically.
-   The examples below are placeholders — delete them. */
+const SITE = {
+  name:    "the tapasya project",
+  tagline: "In search of one photograph.",
+
+  // The big opening photo. Pick your strongest wide shot.
+  cover:   "https://picsum.photos/id/1036/2400/1600",
+
+  // The story. Each line appears on its own and lights up as you scroll.
+  // Add "small" to make a line smaller, "final" for the closing line.
+  story: [
+    ["Hi, I'm Tapasya."],
+    ["I want to take a photograph."],
+    ["Just one."],
+    ["I haven't found that frame yet.", "small"],
+    ["So until I do — and I will —", "small"],
+    ["I'll keep clicking.", "small"],
+    ["Here's to the search.", "final"],
+  ],
+
+  galleryTitle: "The search so far.",
+
+  endTitle: "Still looking.",
+  endText:  "The frame is out there. Here's to the journey.",
+  contact:  "",      // e.g. "https://instagram.com/yourhandle" — leave "" to hide
+  contactLabel: "Follow the search ›",
+};
+
+// Your photos. Put files in a "photos" folder and list them like:
+//   { src: "photos/ladakh-lake.jpg", caption: "Pangong, 2025" },
+// Sizes and orientations are worked out automatically. Delete these samples.
 const PHOTOS = [
-  { src: "https://picsum.photos/id/1015/1600/1067", caption: "Landscape" },
-  { src: "https://picsum.photos/id/1027/1000/1500", caption: "Portrait" },
-  { src: "https://picsum.photos/id/1043/2400/800",  caption: "Panorama" },
-  { src: "https://picsum.photos/id/1050/1200/1200", caption: "Square" },
+  { src: "https://picsum.photos/id/1015/1600/1067", caption: "" },
+  { src: "https://picsum.photos/id/1027/1000/1500", caption: "" },
+  { src: "https://picsum.photos/id/1043/2400/800",  caption: "" },
+  { src: "https://picsum.photos/id/1050/1200/1200", caption: "" },
   { src: "https://picsum.photos/id/1039/1600/1067", caption: "" },
   { src: "https://picsum.photos/id/1062/1000/1500", caption: "" },
   { src: "https://picsum.photos/id/1074/1600/900",  caption: "" },
   { src: "https://picsum.photos/id/1080/1000/1400", caption: "" },
   { src: "https://picsum.photos/id/110/1600/1067",  caption: "" },
   { src: "https://picsum.photos/id/1011/2000/1000", caption: "" },
+  { src: "https://picsum.photos/id/1018/1600/1067", caption: "" },
+  { src: "https://picsum.photos/id/1025/1000/1400", caption: "" },
 ];
-/* ======================================== */
+</script>
+<!-- ===================================================================== -->
 
-const gallery = document.getElementById('gallery');
-const lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg'), lbCap = document.getElementById('lbCap');
-let current = 0;
+<header class="nav">
+  <div class="in">
+    <a class="brand" href="#top" id="brand"></a>
+    <nav><a href="#story">story</a><a href="#work">work</a></nav>
+  </div>
+</header>
 
+<section class="hero" id="top">
+  <div class="bg"><img id="cover" alt=""></div>
+  <h1 id="h1" class="fade"></h1>
+  <p id="tag" class="fade"></p>
+</section>
+
+<section class="story" id="story"></section>
+
+<div class="head fade" id="work"><h2 id="gTitle"></h2><span id="count"></span></div>
+<main class="gallery" id="gallery"></main>
+
+<section class="end fade">
+  <h2 id="endTitle"></h2>
+  <p id="endText"></p>
+  <a id="contact" target="_blank" rel="noopener"></a>
+</section>
+
+<footer><span id="copy"></span><span id="name2"></span></footer>
+
+<div class="lb" id="lb" aria-hidden="true">
+  <div class="num" id="num"></div>
+  <button class="btn close" aria-label="Close">✕</button>
+  <button class="btn prev" aria-label="Previous">‹</button>
+  <img id="lbImg" alt="">
+  <div class="cap" id="lbCap"></div>
+  <button class="btn next" aria-label="Next">›</button>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* Text */
+document.title = SITE.name;
+$('brand').textContent = SITE.name;
+$('h1').textContent = SITE.name;
+$('tag').textContent = SITE.tagline;
+$('gTitle').textContent = SITE.galleryTitle;
+$('count').textContent = `${PHOTOS.length} frames. And counting.`;
+$('endTitle').textContent = SITE.endTitle;
+$('endText').textContent = SITE.endText;
+if (SITE.contact) { $('contact').href = SITE.contact; $('contact').textContent = SITE.contactLabel; } else $('contact').remove();
+$('copy').textContent = `© ${new Date().getFullYear()} Tapasya`;
+$('name2').textContent = SITE.name;
+
+SITE.story.forEach(([line, cls]) => {
+  const p = document.createElement('p');
+  p.textContent = line;
+  if (cls) p.className = cls;
+  $('story').appendChild(p);
+});
+
+/* Hero */
+const cover = $('cover');
+cover.onload = () => { cover.classList.add('ready'); setTimeout(() => { $('h1').classList.add('in'); }, 300); setTimeout(() => { $('tag').classList.add('in'); }, 600); };
+cover.onerror = cover.onload;
+cover.src = SITE.cover;
+
+/* Story lines light up when they reach the middle of the screen */
+const lit = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('lit', e.isIntersecting)),
+  { rootMargin: '-38% 0px -38% 0px' });
+document.querySelectorAll('.story p').forEach(p => lit.observe(p));
+
+/* Generic fade-ins */
+const fader = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); fader.unobserve(e.target); } }),
+  { rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.head.fade, .end.fade').forEach(el => fader.observe(el));
+
+/* Gallery */
 PHOTOS.forEach((p, i) => {
-  const tile = document.createElement('div');
-  tile.className = 'tile';
-  tile.style.flexBasis = 'calc(var(--row) * 1.5)';  // provisional until size is known
+  const tile = document.createElement('figure');
+  tile.className = 'tile fade';
+  tile.style.flexBasis = 'calc(var(--row) * 1.5)';
+  tile.style.transitionDelay = `${(i % 3) * 80}ms`;
   const img = new Image();
   img.loading = 'lazy';
   img.alt = p.caption || '';
-  img.onload = () => {
-    const ratio = img.naturalWidth / img.naturalHeight;
-    tile.style.flexBasis = `calc(var(--row) * ${ratio})`;
-    tile.style.flexGrow = ratio;
-  };
+  img.onload = () => { const r = img.naturalWidth / img.naturalHeight; tile.style.flexBasis = `calc(var(--row) * ${r})`; tile.style.flexGrow = r; };
   img.src = p.src;
   tile.appendChild(img);
-  tile.onclick = () => open(i);
-  gallery.appendChild(tile);
+  tile.onclick = () => show(i);
+  $('gallery').appendChild(tile);
+  fader.observe(tile);
 });
 
-function open(i) {
-  current = (i + PHOTOS.length) % PHOTOS.length;
-  lbImg.src = PHOTOS[current].src;
-  lbCap.textContent = PHOTOS[current].caption || '';
-  lb.classList.add('open');
+/* Lightbox */
+const lb = $('lb'), lbImg = $('lbImg');
+let cur = 0;
+function show(i) {
+  cur = (i + PHOTOS.length) % PHOTOS.length;
+  const p = PHOTOS[cur];
+  lbImg.classList.add('fading');
+  const pre = new Image();
+  pre.onload = () => { lbImg.src = p.src; lbImg.classList.remove('fading'); };
+  pre.src = p.src;
+  $('lbCap').textContent = p.caption || '';
+  $('num').textContent = `${cur + 1} of ${PHOTOS.length}`;
+  lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  new Image().src = PHOTOS[(cur + 1) % PHOTOS.length].src;
 }
-function close() { lb.classList.remove('open'); }
-lb.querySelector('.close').onclick = close;
-lb.querySelector('.prev').onclick = e => { e.stopPropagation(); open(current - 1); };
-lb.querySelector('.next').onclick = e => { e.stopPropagation(); open(current + 1); };
-lb.onclick = e => { if (e.target === lb) close(); };
+function hide() { lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+lb.querySelector('.close').onclick = hide;
+lb.querySelector('.prev').onclick = e => { e.stopPropagation(); show(cur - 1); };
+lb.querySelector('.next').onclick = e => { e.stopPropagation(); show(cur + 1); };
+lb.onclick = e => { if (e.target === lb) hide(); };
 document.addEventListener('keydown', e => {
   if (!lb.classList.contains('open')) return;
-  if (e.key === 'Escape') close();
-  if (e.key === 'ArrowLeft') open(current - 1);
-  if (e.key === 'ArrowRight') open(current + 1);
+  if (e.key === 'Escape') hide();
+  if (e.key === 'ArrowLeft') show(cur - 1);
+  if (e.key === 'ArrowRight') show(cur + 1);
 });
-
-/* Swipe on phones */
 let x0 = null;
 lb.addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
 lb.addEventListener('touchend', e => {
   if (x0 === null) return;
   const dx = e.changedTouches[0].clientX - x0;
-  if (Math.abs(dx) > 50) open(current + (dx < 0 ? 1 : -1));
+  if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1));
   x0 = null;
 });
 </script>
