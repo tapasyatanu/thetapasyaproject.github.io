@@ -6,101 +6,130 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#000000">
 <title>the tapasya project</title>
+<link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="brand/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #000;
-    --white: #f5f5f7;
-    --grey: #86868b;
-    --dim: #424245;
-    --blue: #2997ff;
+    --white: #f5f5f7; --grey: #86868b; --dim: #3a3a3d; --blue: #2997ff;
     --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Helvetica Neue", sans-serif;
-    --gap: 12px;
-    --row: 320px;
-    --radius: 18px;
+    --gap: 12px; --row: 320px; --radius: 18px;
     --ease: cubic-bezier(.25,.1,.25,1);
+    --orb: radial-gradient(circle at 34% 30%, #fff3a6 0%, #ffcf3f 14%, #ff5ea8 42%, #c44dff 72%, #5b22c9 100%);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  body { background: var(--black); color: var(--white); font-family: var(--font); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { background: #000; color: var(--white); font-family: var(--font); -webkit-font-smoothing: antialiased; }
   a { color: inherit; text-decoration: none; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  /* ---------- Nav: frosted glass ---------- */
+  /* ---------- Nav (appears after the opening) ---------- */
   .nav { position: fixed; inset: 0 0 auto 0; z-index: 10; height: 48px;
          background: rgba(22,22,23,.72); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
-         border-bottom: 1px solid rgba(255,255,255,.06); }
+         border-bottom: 1px solid rgba(255,255,255,.06);
+         transform: translateY(-100%); transition: transform .5s var(--ease); }
+  .nav.show { transform: none; }
   .nav .in { max-width: 1024px; height: 100%; margin: 0 auto; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; }
-  .nav .brand { font-size: 17px; font-weight: 600; letter-spacing: -.02em; }
-  .nav nav a { font-size: 12px; color: rgba(245,245,247,.8); margin-left: 28px; transition: color .3s; }
+  .nav .brand img { height: 22px; display: block; }
+  .nav nav a { font-size: 12px; color: rgba(245,245,247,.8); margin-left: 28px; }
   .nav nav a:hover { color: #fff; }
 
-  /* ---------- Hero ---------- */
-  .hero { position: relative; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; text-align: center; overflow: hidden; padding: 0 22px 12vh; }
-  .hero .bg { position: absolute; inset: 0; }
-  .hero .bg img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity 1.8s var(--ease), transform 2.6s var(--ease); }
-  .hero .bg img.ready { opacity: 1; transform: scale(1); }
-  .hero .bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.15) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,.55) 75%, #000 100%); }
-  .hero h1, .hero p { position: relative; }
-  .hero h1 { font-size: clamp(48px, 9vw, 112px); font-weight: 700; letter-spacing: -.045em; line-height: 1.02; }
-  .hero p { font-size: clamp(21px, 2.6vw, 28px); font-weight: 500; letter-spacing: -.01em; color: rgba(245,245,247,.86); margin-top: 14px; }
+  /* ---------- Opening: scroll-driven ---------- */
+  .intro { position: relative; height: 260vh; }
+  .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  .stage > * { position: absolute; will-change: transform, opacity; }
+  .photo { inset: 0; opacity: 0; }
+  .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.55); }
+  .corner { width: 20px; height: 20px; border: 0 solid var(--white); left: 0; top: 0; }
+  .corner.tl { border-left-width: 1.5px; border-top-width: 1.5px; }
+  .corner.br { border-right-width: 1.5px; border-bottom-width: 1.5px; }
+  .orb { left: 0; top: 0; width: 16px; height: 16px; }
+  .orb i, .pop, .rec, .mini .d { display: block; border-radius: 50%; background: var(--orb); }
+  .orb i { width: 100%; height: 100%; position: relative; animation: pulse 2.2s ease-in-out infinite; }
+  .orb i::after { content: ""; position: absolute; inset: -140%; border-radius: 50%;
+                  background: radial-gradient(circle, rgba(255,94,168,.35) 0%, rgba(196,77,255,.12) 40%, transparent 70%); animation: halo 2.2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+  @keyframes halo { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
+  .title { left: 50%; top: 50%; width: min(74vw, 760px); opacity: 0; }
+  .title svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .pop { left: 0; top: 0; width: 10px; height: 10px; transform: scale(0); }
+  .tagline { left: 0; right: 0; text-align: center; font-size: clamp(17px, 2vw, 21px); font-weight: 500; color: rgba(245,245,247,.8); letter-spacing: -.01em; opacity: 0; }
+  .hint { left: 0; right: 0; bottom: 34px; text-align: center; font-size: 12px; color: var(--grey); letter-spacing: .02em; animation: bob 2.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { translate: 0 0; } 50% { translate: 0 6px; } }
 
-  /* ---------- Story: lines light up as you scroll ---------- */
-  .story { max-width: 980px; margin: 0 auto; padding: 22vh 22px 18vh; }
+  /* ---------- Story ---------- */
+  .story { max-width: 980px; margin: 0 auto; padding: 18vh 22px 18vh; }
   .story p { font-size: clamp(36px, 6vw, 72px); font-weight: 600; letter-spacing: -.035em; line-height: 1.12; color: var(--dim); transition: color .7s var(--ease); margin-bottom: .32em; }
   .story p.lit { color: var(--white); }
   .story p.small { font-size: clamp(24px, 3.4vw, 40px); }
   .story p.final { margin-top: 1.1em; }
-  .story p.final.lit { background: linear-gradient(90deg, #f5f5f7 0%, #a1a1a6 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-
-  /* ---------- Section head ---------- */
-  .head { max-width: 1024px; margin: 0 auto; padding: 0 22px 40px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-  .head h2 { font-size: clamp(40px, 5.6vw, 64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; }
-  .head span { font-size: 17px; color: var(--grey); padding-bottom: 8px; }
-
-  .fade { opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
-  .fade.in { opacity: 1; transform: none; }
+  .story p.final.lit { background: linear-gradient(90deg, #ffd88a 0%, #ff8fb8 35%, #d77bff 70%, #8f6bff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
   /* ---------- Gallery ---------- */
+  .head { max-width: 1024px; margin: 0 auto; padding: 0 22px 40px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .head h2 { font-size: clamp(40px, 5.6vw, 64px); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; }
+  .head span { font-size: 17px; color: var(--grey); padding-bottom: 8px; display: inline-flex; align-items: center; gap: 10px; }
+  .rec { width: 9px; height: 9px; animation: blink 1.6s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  .fade { opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+  .fade.in { opacity: 1; transform: none; }
   .gallery { max-width: 1440px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: var(--gap); padding: 0 var(--gap); }
   .gallery::after { content: ""; flex-grow: 999999; }
-  .tile { height: var(--row); flex-grow: 1; overflow: hidden; border-radius: var(--radius); background: #1d1d1f; cursor: zoom-in; }
+  .tile { position: relative; height: var(--row); flex-grow: 1; overflow: hidden; border-radius: var(--radius); background: #1d1d1f; cursor: zoom-in; }
   .tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .8s var(--ease); }
   .tile:hover img { transform: scale(1.03); }
+  /* callback: viewfinder corners on hover */
+  .tile::before, .tile::after { content: ""; position: absolute; z-index: 1; width: 22px; height: 22px; border: 0 solid rgba(255,255,255,.9); opacity: 0; transition: opacity .4s var(--ease), transform .5s var(--ease); pointer-events: none; }
+  .tile::before { left: 14px; top: 14px; border-left-width: 1.5px; border-top-width: 1.5px; transform: translate(-8px,-8px); }
+  .tile::after { right: 14px; bottom: 14px; border-right-width: 1.5px; border-bottom-width: 1.5px; transform: translate(8px,8px); }
+  .tile:hover::before, .tile:hover::after { opacity: 1; transform: none; }
 
-  /* ---------- Ending ---------- */
+  /* ---------- Ending: the frame closes on nothing ---------- */
   .end { text-align: center; padding: 26vh 22px 22vh; }
+  .mini { position: relative; width: 64px; height: 64px; margin: 0 auto 44px; }
+  .mini .c { position: absolute; width: 26px; height: 26px; border: 0 solid var(--white); transition: transform 1.4s var(--ease) .2s; }
+  .mini .c.a { left: 0; top: 0; border-left-width: 1.5px; border-top-width: 1.5px; transform: translate(-40px,-40px); }
+  .mini .c.b { right: 0; bottom: 0; border-right-width: 1.5px; border-bottom-width: 1.5px; transform: translate(40px,40px); }
+  .mini .d { position: absolute; width: 11px; height: 11px; right: -20px; bottom: -4.75px; opacity: 0; transition: opacity .6s 1.4s; }
+  .end.in .mini .c { transform: none; }
+  .end.in .mini .d { opacity: 1; animation: blink 1.6s ease-in-out 2s infinite; }
   .end h2 { font-size: clamp(44px, 7.4vw, 96px); font-weight: 700; letter-spacing: -.045em; line-height: 1.04; }
   .end p { font-size: clamp(19px, 2.2vw, 24px); color: var(--grey); margin-top: 18px; letter-spacing: -.01em; }
   .end a { display: inline-block; margin-top: 36px; font-size: 17px; color: var(--blue); }
-  .end a:hover { text-decoration: underline; }
 
-  footer { border-top: 1px solid #1d1d1f; max-width: 1024px; margin: 0 auto; padding: 22px; display: flex; justify-content: space-between; font-size: 12px; color: var(--grey); }
+  footer { border-top: 1px solid #1d1d1f; max-width: 1024px; margin: 0 auto; padding: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--grey); }
+  footer img { height: 14px; display: block; opacity: .7; }
 
   /* ---------- Lightbox ---------- */
   .lb { position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,.96); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
         display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .35s var(--ease); }
   .lb.open { opacity: 1; pointer-events: auto; }
-  .lb img { max-width: 92vw; max-height: 80vh; object-fit: contain; border-radius: 12px; transition: opacity .3s var(--ease), transform .4s var(--ease); }
-  .lb img.fading { opacity: 0; transform: scale(.985); }
+  .lb img { max-width: 92vw; max-height: 80vh; object-fit: contain; border-radius: 12px; transition: opacity .3s var(--ease); }
+  .lb img.fading { opacity: 0; }
   .lb .cap { margin-top: 18px; font-size: 14px; color: var(--grey); min-height: 1.2em; }
-  .lb .btn { position: absolute; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255,255,255,.12); color: #fff; font: 400 22px/44px var(--font); cursor: pointer; transition: background .25s; }
+  .lb .btn { position: absolute; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255,255,255,.12); color: #fff; font: 400 22px/44px var(--font); cursor: pointer; }
   .lb .btn:hover { background: rgba(255,255,255,.22); }
   .lb .close { top: 20px; right: 20px; font-size: 18px; }
   .lb .prev { left: 20px; top: 50%; transform: translateY(-50%); }
   .lb .next { right: 20px; top: 50%; transform: translateY(-50%); }
-  .lb .num { position: absolute; top: 32px; left: 0; right: 0; text-align: center; font-size: 12px; color: var(--grey); letter-spacing: .02em; pointer-events: none; }
+  .lb .num { position: absolute; top: 32px; left: 0; right: 0; text-align: center; font-size: 12px; color: var(--grey); pointer-events: none; }
 
   @media (max-width: 734px) {
     :root { --row: 180px; --gap: 6px; --radius: 12px; }
     .nav nav a { margin-left: 18px; }
+    .title { width: 68vw; }
     .lb .prev, .lb .next { display: none; }
-    footer { flex-direction: column; gap: 6px; text-align: center; }
+    .tile::before, .tile::after { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { transition: none !important; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .intro { height: 100vh; height: 100svh; }
     .fade { opacity: 1; transform: none; } .story p { color: var(--white); }
+    .end .mini .c { transform: none; } .end .mini .d { opacity: 1; }
   }
 </style>
 </head>
@@ -111,23 +140,21 @@
      ===================================================================== -->
 <script>
 const SITE = {
-  name:    "the tapasya project",
-  tagline: "In search of that one photograph.",
+  tagline: "In search of one photograph.",
 
-  // The big opening photo. Pick your strongest wide shot.
+  // The photo that appears inside the opening frame. Pick your strongest wide shot.
   cover:   "https://picsum.photos/id/1036/2400/1600",
 
-  // The story. Each line appears on its own and lights up as you scroll.
+  // The story. Each line lights up as you scroll.
   // Add "small" to make a line smaller, "final" for the closing line.
   story: [
     ["Hi, I'm Tapasya."],
     ["I want to take a photograph."],
     ["Just one."],
-    ["But I haven't found that frame...yet.", "small"],
+    ["I haven't found that frame yet.", "small"],
     ["So until I do — and I will —", "small"],
     ["I'll keep clicking.", "small"],
-    ["This is that search manifest.", "small"],
-    ["This is the tapasya project.", "final"],
+    ["Here's to the search.", "final"],
   ],
 
   galleryTitle: "The search so far.",
@@ -158,31 +185,52 @@ const PHOTOS = [
 </script>
 <!-- ===================================================================== -->
 
-<header class="nav">
+<header class="nav" id="nav">
   <div class="in">
-    <a class="brand" href="#top" id="brand"></a>
+    <a class="brand" href="#top"><img src="brand/logo-white.svg" alt="the tapasya project"></a>
     <nav><a href="#story">story</a><a href="#work">work</a></nav>
   </div>
 </header>
 
-<section class="hero" id="top">
-  <div class="bg"><img id="cover" alt=""></div>
-  <h1 id="h1" class="fade"></h1>
-  <p id="tag" class="fade"></p>
+<section class="intro" id="top">
+  <h1 class="sr">the tapasya project</h1>
+  <div class="stage" id="stage">
+    <div class="photo" id="photo"><img id="cover" alt=""></div>
+    <div class="title" id="title">
+      <svg viewBox="3.20 -70.10 598.70 91.10" aria-hidden="true">
+        <defs>
+          <linearGradient id="tg" gradientUnits="userSpaceOnUse" x1="3.20" y1="0" x2="601.90" y2="0">
+            <stop offset="0" stop-color="#ffd88a"/>
+            <stop offset=".3" stop-color="#ff8fb8"/>
+            <stop offset=".62" stop-color="#d77bff"/>
+            <stop offset="1" stop-color="#8f6bff"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#tg)" d="M21.3 -47.0H13.0Q12.600000000000001 -47.0 12.600000000000001 -46.6V-13.0Q12.600000000000001 -7.7 14.4 -5.6Q16.2 -3.5 20.1 -3.5H21.200000000000003Q22.200000000000003 -3.5 22.200000000000003 -2.5V-1.0Q22.200000000000003 0.0 21.200000000000003 0.0H19.5Q14.200000000000001 0.0 11.450000000000001 -2.6Q8.700000000000001 -5.2 8.700000000000001 -12.3V-46.6Q8.700000000000001 -47.0 8.3 -47.0H4.2Q3.2 -47.0 3.2 -48.0V-49.2Q3.2 -50.2 4.2 -50.2H8.3Q8.700000000000001 -50.2 8.700000000000001 -50.6V-61.800000000000004Q8.700000000000001 -62.800000000000004 9.700000000000001 -62.800000000000004H11.600000000000001Q12.600000000000001 -62.800000000000004 12.600000000000001 -61.800000000000004V-50.6Q12.600000000000001 -50.2 13.0 -50.2H21.3Q22.3 -50.2 22.3 -49.2V-48.0Q22.3 -47.0 21.3 -47.0Z M60.5 -35.6V-1.0Q60.5 0.0 59.5 0.0H57.6Q56.6 0.0 56.6 -1.0V-35.2Q56.6 -41.0 54.0 -44.2Q51.400000000000006 -47.400000000000006 46.800000000000004 -47.400000000000006Q42.1 -47.400000000000006 39.35 -43.95Q36.6 -40.5 36.6 -34.5V-1.0Q36.6 0.0 35.6 0.0H33.7Q32.7 0.0 32.7 -1.0V-69.0Q32.7 -70.0 33.7 -70.0H35.6Q36.6 -70.0 36.6 -69.0V-44.800000000000004Q36.6 -44.5 36.75 -44.5Q36.900000000000006 -44.5 37.1 -44.7Q40.5 -50.900000000000006 47.900000000000006 -50.900000000000006Q53.900000000000006 -50.900000000000006 57.2 -46.85000000000001Q60.5 -42.800000000000004 60.5 -35.6Z M100.30000000000001 -24.0H77.1Q76.7 -24.0 76.7 -23.6V-14.0Q76.7 -9.0 79.6 -5.85Q82.5 -2.7 87.0 -2.7Q90.8 -2.7 93.5 -4.9Q96.2 -7.1000000000000005 97.1 -10.8Q97.4 -11.700000000000001 98.2 -11.700000000000001L100.0 -11.600000000000001Q100.5 -11.600000000000001 100.75 -11.3Q101.0 -11.0 100.9 -10.5Q100.0 -5.4 96.25 -2.3000000000000003Q92.5 0.8 87.0 0.8Q80.7 0.8 76.75 -3.2500000000000004Q72.8 -7.300000000000001 72.8 -13.8V-36.300000000000004Q72.8 -42.800000000000004 76.75 -46.900000000000006Q80.7 -51.0 87.0 -51.0Q93.4 -51.0 97.35000000000001 -46.900000000000006Q101.30000000000001 -42.800000000000004 101.30000000000001 -36.300000000000004V-25.0Q101.30000000000001 -24.0 100.30000000000001 -24.0ZM76.7 -36.2V-27.700000000000003Q76.7 -27.3 77.1 -27.3H97.0Q97.4 -27.3 97.4 -27.700000000000003V-36.2Q97.4 -41.2 94.5 -44.35Q91.6 -47.5 87.0 -47.5Q82.5 -47.5 79.6 -44.35Q76.7 -41.2 76.7 -36.2Z M129.4 -45.300000000000004H121.8Q121.4 -45.300000000000004 121.4 -44.900000000000006V-14.3Q121.4 -9.700000000000001 123.0 -7.950000000000001Q124.6 -6.2 127.9 -6.300000000000001H128.9Q129.9 -6.300000000000001 129.9 -5.300000000000001V-1.0Q129.9 0.0 128.9 0.0H126.4Q120.5 0.0 117.45 -2.5500000000000003Q114.4 -5.1000000000000005 114.4 -12.200000000000001V-44.900000000000006Q114.4 -45.300000000000004 114.0 -45.300000000000004H110.1Q109.1 -45.300000000000004 109.1 -46.300000000000004V-49.6Q109.1 -50.6 110.1 -50.6H114.0Q114.4 -50.6 114.4 -51.0V-62.2Q114.4 -63.2 115.4 -63.2H120.4Q121.4 -63.2 121.4 -62.2V-51.0Q121.4 -50.6 121.8 -50.6H129.4Q130.4 -50.6 130.4 -49.6V-46.300000000000004Q130.4 -45.300000000000004 129.4 -45.300000000000004Z M169.5 -34.7V-1.0Q169.5 0.0 168.5 0.0H163.39999999999998Q162.39999999999998 0.0 162.39999999999998 -1.0V-4.0Q162.39999999999998 -4.2 162.25 -4.25Q162.1 -4.3 161.89999999999998 -4.1000000000000005Q158.2 0.8 150.79999999999998 0.8Q145.29999999999998 0.8 141.25 -2.35Q137.2 -5.5 137.2 -13.5Q137.2 -22.0 142.1 -25.950000000000003Q147.0 -29.900000000000002 155.0 -29.900000000000002H162.0Q162.39999999999998 -29.900000000000002 162.39999999999998 -30.3V-34.2Q162.39999999999998 -39.2 160.09999999999997 -42.2Q157.79999999999998 -45.2 153.89999999999998 -45.2Q150.89999999999998 -45.2 148.75 -43.2Q146.6 -41.2 146.2 -38.1Q146.2 -37.1 145.2 -37.1L139.6 -37.2Q139.1 -37.2 138.85 -37.5Q138.6 -37.800000000000004 138.7 -38.2Q139.2 -44.1 143.5 -47.75Q147.79999999999998 -51.400000000000006 154.1 -51.400000000000006Q161.1 -51.400000000000006 165.3 -46.85000000000001Q169.5 -42.300000000000004 169.5 -34.7ZM162.39999999999998 -15.4V-23.8Q162.39999999999998 -24.200000000000003 162.0 -24.200000000000003H154.89999999999998Q150.1 -24.200000000000003 147.3 -21.650000000000002Q144.5 -19.1 144.5 -14.100000000000001Q144.5 -9.700000000000001 146.64999999999998 -7.550000000000001Q148.79999999999998 -5.4 152.29999999999998 -5.4Q156.39999999999998 -5.4 159.39999999999998 -8.05Q162.39999999999998 -10.700000000000001 162.39999999999998 -15.4Z M212.3 -36.1V-14.5Q212.3 -7.5 208.5 -3.35Q204.7 0.8 198.4 0.8Q195.6 0.8 193.1 -0.25Q190.6 -1.3 188.7 -3.5Q188.5 -3.7 188.35 -3.6Q188.2 -3.5 188.2 -3.3000000000000003V18.400000000000002Q188.2 19.400000000000002 187.2 19.400000000000002H182.1Q181.1 19.400000000000002 181.1 18.400000000000002V-49.6Q181.1 -50.6 182.1 -50.6H187.2Q188.2 -50.6 188.2 -49.6V-47.300000000000004Q188.2 -47.1 188.39999999999998 -47.05Q188.6 -47.0 188.8 -47.2Q190.6 -49.300000000000004 193.14999999999998 -50.35000000000001Q195.7 -51.400000000000006 198.4 -51.400000000000006Q204.7 -51.400000000000006 208.5 -47.150000000000006Q212.3 -42.900000000000006 212.3 -36.1ZM196.6 -45.2Q192.9 -45.2 190.55 -42.550000000000004Q188.2 -39.900000000000006 188.2 -35.6V-15.0Q188.2 -10.700000000000001 190.55 -8.05Q192.9 -5.4 196.6 -5.4Q200.4 -5.4 202.85000000000002 -8.05Q205.3 -10.700000000000001 205.3 -15.0V-35.6Q205.3 -39.900000000000006 202.85000000000002 -42.550000000000004Q200.4 -45.2 196.6 -45.2Z M253.60000000000002 -34.7V-1.0Q253.60000000000002 0.0 252.60000000000002 0.0H247.5Q246.5 0.0 246.5 -1.0V-4.0Q246.5 -4.2 246.35000000000002 -4.25Q246.20000000000002 -4.3 246.0 -4.1000000000000005Q242.3 0.8 234.9 0.8Q229.4 0.8 225.35000000000002 -2.35Q221.3 -5.5 221.3 -13.5Q221.3 -22.0 226.20000000000002 -25.950000000000003Q231.10000000000002 -29.900000000000002 239.10000000000002 -29.900000000000002H246.10000000000002Q246.5 -29.900000000000002 246.5 -30.3V-34.2Q246.5 -39.2 244.2 -42.2Q241.9 -45.2 238.0 -45.2Q235.0 -45.2 232.85000000000002 -43.2Q230.70000000000002 -41.2 230.3 -38.1Q230.3 -37.1 229.3 -37.1L223.70000000000002 -37.2Q223.20000000000002 -37.2 222.95000000000002 -37.5Q222.70000000000002 -37.800000000000004 222.8 -38.2Q223.3 -44.1 227.60000000000002 -47.75Q231.9 -51.400000000000006 238.20000000000002 -51.400000000000006Q245.20000000000002 -51.400000000000006 249.40000000000003 -46.85000000000001Q253.60000000000002 -42.300000000000004 253.60000000000002 -34.7ZM246.5 -15.4V-23.8Q246.5 -24.200000000000003 246.10000000000002 -24.200000000000003H239.0Q234.20000000000002 -24.200000000000003 231.40000000000003 -21.650000000000002Q228.60000000000002 -19.1 228.60000000000002 -14.100000000000001Q228.60000000000002 -9.700000000000001 230.75 -7.550000000000001Q232.9 -5.4 236.4 -5.4Q240.5 -5.4 243.5 -8.05Q246.5 -10.700000000000001 246.5 -15.4Z M262.70000000000005 -12.5V-13.200000000000001Q262.70000000000005 -14.200000000000001 263.70000000000005 -14.200000000000001H268.5Q269.5 -14.200000000000001 269.5 -13.200000000000001V-12.600000000000001Q269.5 -9.4 271.85 -7.2Q274.20000000000005 -5.0 278.0 -5.0Q281.6 -5.0 283.8 -7.2Q286.0 -9.4 286.0 -12.8Q286.0 -15.4 284.6 -17.150000000000002Q283.20000000000005 -18.900000000000002 281.35 -19.900000000000002Q279.5 -20.900000000000002 275.8 -22.5Q271.90000000000003 -24.1 269.35 -25.650000000000002Q266.8 -27.200000000000003 264.95000000000005 -30.05Q263.1 -32.9 263.1 -37.300000000000004Q263.1 -43.7 267.05 -47.400000000000006Q271.0 -51.1 277.70000000000005 -51.1Q284.5 -51.1 288.5 -47.3Q292.5 -43.5 292.5 -37.2V-36.9Q292.5 -35.9 291.5 -35.9H286.90000000000003Q285.90000000000003 -35.9 285.90000000000003 -36.9V-37.5Q285.90000000000003 -40.900000000000006 283.65000000000003 -43.10000000000001Q281.40000000000003 -45.300000000000004 277.8 -45.300000000000004Q274.20000000000005 -45.300000000000004 272.05000000000007 -43.050000000000004Q269.90000000000003 -40.800000000000004 269.90000000000003 -37.5Q269.90000000000003 -35.1 271.20000000000005 -33.45Q272.5 -31.8 274.4 -30.75Q276.3 -29.700000000000003 279.70000000000005 -28.200000000000003Q283.8 -26.400000000000002 286.45000000000005 -24.800000000000004Q289.1 -23.200000000000003 291.1 -20.300000000000004Q293.1 -17.400000000000002 293.1 -13.100000000000001Q293.1 -6.9 289.0 -3.2Q284.90000000000003 0.5 277.90000000000003 0.5Q271.0 0.5 266.85 -3.0500000000000003Q262.70000000000005 -6.6000000000000005 262.70000000000005 -12.5Z M298.90000000000003 19.0V15.0Q298.90000000000003 14.0 299.90000000000003 14.0Q303.0 13.9 304.75 12.8Q306.5 11.700000000000001 307.6 8.9Q308.70000000000005 6.1000000000000005 309.8 0.30000000000000004Q309.90000000000003 0.1 309.85 -0.05Q309.8 -0.2 309.8 -0.30000000000000004L297.1 -49.5L297.0 -49.800000000000004Q297.0 -50.6 298.0 -50.6H303.40000000000003Q304.40000000000003 -50.6 304.5 -49.7L313.3 -10.4Q313.40000000000003 -10.100000000000001 313.5 -10.100000000000001Q313.6 -10.100000000000001 313.70000000000005 -10.4L322.40000000000003 -49.7Q322.6 -50.6 323.5 -50.6L329.1 -50.5Q329.6 -50.5 329.85 -50.2Q330.1 -49.900000000000006 329.90000000000003 -49.400000000000006L316.0 4.4Q314.20000000000005 11.100000000000001 312.45000000000005 14.3Q310.70000000000005 17.5 307.90000000000003 18.75Q305.1 20.0 300.0 20.0H299.5Q299.3 20.0 299.1 19.700000000000003Q298.90000000000003 19.400000000000002 298.90000000000003 19.0Z M367.6 -34.7V-1.0Q367.6 0.0 366.6 0.0H361.5Q360.5 0.0 360.5 -1.0V-4.0Q360.5 -4.2 360.35 -4.25Q360.2 -4.3 360.0 -4.1000000000000005Q356.3 0.8 348.90000000000003 0.8Q343.40000000000003 0.8 339.35 -2.35Q335.3 -5.5 335.3 -13.5Q335.3 -22.0 340.20000000000005 -25.950000000000003Q345.1 -29.900000000000002 353.1 -29.900000000000002H360.1Q360.5 -29.900000000000002 360.5 -30.3V-34.2Q360.5 -39.2 358.20000000000005 -42.2Q355.90000000000003 -45.2 352.0 -45.2Q349.0 -45.2 346.85 -43.2Q344.7 -41.2 344.3 -38.1Q344.3 -37.1 343.3 -37.1L337.7 -37.2Q337.2 -37.2 336.95 -37.5Q336.7 -37.800000000000004 336.8 -38.2Q337.3 -44.1 341.6 -47.75Q345.90000000000003 -51.400000000000006 352.2 -51.400000000000006Q359.2 -51.400000000000006 363.4 -46.85000000000001Q367.6 -42.300000000000004 367.6 -34.7ZM360.5 -15.4V-23.8Q360.5 -24.200000000000003 360.1 -24.200000000000003H353.0Q348.2 -24.200000000000003 345.4 -21.650000000000002Q342.6 -19.1 342.6 -14.100000000000001Q342.6 -9.700000000000001 344.75 -7.550000000000001Q346.90000000000003 -5.4 350.40000000000003 -5.4Q354.5 -5.4 357.5 -8.05Q360.5 -10.700000000000001 360.5 -15.4Z M408.6 -36.4V-13.9Q408.6 -7.300000000000001 404.85 -3.2500000000000004Q401.1 0.8 395.0 0.8Q391.8 0.8 389.15 -0.6Q386.5 -2.0 384.8 -4.6000000000000005Q384.6 -4.800000000000001 384.45000000000005 -4.75Q384.3 -4.7 384.3 -4.4V18.8Q384.3 19.8 383.3 19.8H381.40000000000003Q380.40000000000003 19.8 380.40000000000003 18.8V-49.2Q380.40000000000003 -50.2 381.40000000000003 -50.2H383.3Q384.3 -50.2 384.3 -49.2V-45.800000000000004Q384.3 -45.5 384.45000000000005 -45.45Q384.6 -45.400000000000006 384.8 -45.6Q386.5 -48.2 389.15 -49.6Q391.8 -51.0 395.0 -51.0Q401.1 -51.0 404.85 -46.900000000000006Q408.6 -42.800000000000004 408.6 -36.4ZM394.3 -47.5Q389.90000000000003 -47.5 387.1 -44.35Q384.3 -41.2 384.3 -36.2V-14.0Q384.3 -9.0 387.1 -5.85Q389.90000000000003 -2.7 394.3 -2.7Q398.90000000000003 -2.7 401.85 -5.85Q404.8 -9.0 404.8 -14.0V-36.2Q404.8 -41.2 401.9 -44.35Q399.0 -47.5 394.3 -47.5Z M440.3 -49.6Q441.0 -49.2 440.7 -48.300000000000004L440.1 -46.300000000000004Q439.8 -45.400000000000006 438.8 -45.800000000000004Q437.4 -46.400000000000006 435.2 -46.300000000000004Q431.0 -46.300000000000004 428.25 -42.2Q425.5 -38.1 425.5 -32.0V-1.0Q425.5 0.0 424.5 0.0H422.6Q421.6 0.0 421.6 -1.0V-49.2Q421.6 -50.2 422.6 -50.2H424.5Q425.5 -50.2 425.5 -49.2V-42.7Q425.5 -42.400000000000006 425.7 -42.400000000000006Q425.9 -42.400000000000006 426.0 -42.7Q427.5 -46.400000000000006 430.0 -48.5Q432.5 -50.6 436.0 -50.6Q438.5 -50.6 440.3 -49.6Z M447.8 -13.9V-36.300000000000004Q447.8 -42.800000000000004 451.75 -46.900000000000006Q455.7 -51.0 462.0 -51.0Q468.4 -51.0 472.35 -46.900000000000006Q476.3 -42.800000000000004 476.3 -36.300000000000004V-13.9Q476.3 -7.4 472.35 -3.3000000000000003Q468.4 0.8 462.0 0.8Q455.7 0.8 451.75 -3.3000000000000003Q447.8 -7.4 447.8 -13.9ZM472.4 -14.0V-36.2Q472.4 -41.2 469.5 -44.35Q466.6 -47.5 462.0 -47.5Q457.5 -47.5 454.6 -44.3Q451.7 -41.1 451.7 -36.2V-14.0Q451.7 -9.1 454.6 -5.9Q457.5 -2.7 462.0 -2.7Q466.6 -2.7 469.5 -5.85Q472.4 -9.0 472.4 -14.0Z M486.7 -65.5Q486.7 -67.5 488.0 -68.80000000000001Q489.3 -70.10000000000001 491.3 -70.10000000000001Q493.3 -70.10000000000001 494.55 -68.80000000000001Q495.8 -67.5 495.8 -65.5Q495.8 -63.6 494.55 -62.3Q493.3 -61.0 491.3 -61.0Q489.3 -61.0 488.0 -62.3Q486.7 -63.6 486.7 -65.5ZM480.5 20.0V18.5Q480.5 17.5 481.5 17.5Q485.3 17.2 487.3 14.25Q489.3 11.3 489.3 6.300000000000001V-49.2Q489.3 -50.2 490.3 -50.2H492.2Q493.2 -50.2 493.2 -49.2V6.300000000000001Q493.2 13.3 490.45 17.05Q487.7 20.8 481.5 21.0Q480.5 21.0 480.5 20.0Z M534.6999999999999 -24.0H511.5Q511.09999999999997 -24.0 511.09999999999997 -23.6V-14.0Q511.09999999999997 -9.0 514.0 -5.85Q516.9 -2.7 521.4 -2.7Q525.1999999999999 -2.7 527.9 -4.9Q530.6 -7.1000000000000005 531.5 -10.8Q531.8 -11.700000000000001 532.6 -11.700000000000001L534.4 -11.600000000000001Q534.9 -11.600000000000001 535.15 -11.3Q535.4 -11.0 535.3 -10.5Q534.4 -5.4 530.65 -2.3000000000000003Q526.9 0.8 521.4 0.8Q515.1 0.8 511.15 -3.2500000000000004Q507.2 -7.300000000000001 507.2 -13.8V-36.300000000000004Q507.2 -42.800000000000004 511.15 -46.900000000000006Q515.1 -51.0 521.4 -51.0Q527.8 -51.0 531.75 -46.900000000000006Q535.6999999999999 -42.800000000000004 535.6999999999999 -36.300000000000004V-25.0Q535.6999999999999 -24.0 534.6999999999999 -24.0ZM511.09999999999997 -36.2V-27.700000000000003Q511.09999999999997 -27.3 511.5 -27.3H531.4Q531.8 -27.3 531.8 -27.700000000000003V-36.2Q531.8 -41.2 528.9 -44.35Q526.0 -47.5 521.4 -47.5Q516.9 -47.5 514.0 -44.35Q511.09999999999997 -41.2 511.09999999999997 -36.2Z M546.6999999999999 -13.9V-36.300000000000004Q546.6999999999999 -42.800000000000004 550.65 -46.900000000000006Q554.6 -51.0 560.9 -51.0Q565.1 -51.0 568.35 -49.2Q571.6 -47.400000000000006 573.4 -44.45Q575.1999999999999 -41.5 575.1999999999999 -38.1V-37.7Q575.1999999999999 -36.7 574.1999999999999 -36.7L572.3 -36.6Q571.3 -36.6 571.3 -37.6V-38.0Q571.3 -41.800000000000004 568.3499999999999 -44.650000000000006Q565.4 -47.5 560.9 -47.5Q556.4 -47.5 553.5 -44.35Q550.6 -41.2 550.6 -36.2V-14.0Q550.6 -9.1 553.5 -5.9Q556.4 -2.7 560.9 -2.7Q565.4 -2.7 568.3499999999999 -5.550000000000001Q571.3 -8.4 571.3 -12.200000000000001V-12.600000000000001Q571.3 -13.600000000000001 572.3 -13.600000000000001H574.1999999999999Q575.1999999999999 -13.600000000000001 575.1999999999999 -12.600000000000001V-12.100000000000001Q575.1999999999999 -8.700000000000001 573.4 -5.750000000000001Q571.6 -2.8000000000000003 568.35 -1.0Q565.1 0.8 560.9 0.8Q554.6 0.8 550.65 -3.3000000000000003Q546.6999999999999 -7.4 546.6999999999999 -13.9Z M600.9 -47.0H592.6Q592.2 -47.0 592.2 -46.6V-13.0Q592.2 -7.7 594.0 -5.6Q595.8000000000001 -3.5 599.7 -3.5H600.8000000000001Q601.8000000000001 -3.5 601.8000000000001 -2.5V-1.0Q601.8000000000001 0.0 600.8000000000001 0.0H599.1Q593.8000000000001 0.0 591.0500000000001 -2.6Q588.3000000000001 -5.2 588.3000000000001 -12.3V-46.6Q588.3000000000001 -47.0 587.9 -47.0H583.8000000000001Q582.8000000000001 -47.0 582.8000000000001 -48.0V-49.2Q582.8000000000001 -50.2 583.8000000000001 -50.2H587.9Q588.3000000000001 -50.2 588.3000000000001 -50.6V-61.800000000000004Q588.3000000000001 -62.800000000000004 589.3000000000001 -62.800000000000004H591.2Q592.2 -62.800000000000004 592.2 -61.800000000000004V-50.6Q592.2 -50.2 592.6 -50.2H600.9Q601.9 -50.2 601.9 -49.2V-48.0Q601.9 -47.0 600.9 -47.0Z"/>
+      </svg>
+    </div>
+    <div class="corner tl" id="ctl"></div>
+    <div class="corner br" id="cbr"></div>
+    <div class="orb" id="orb"><i></i></div>
+    <span class="pop" id="pop"></span>
+    <div class="tagline" id="tag"></div>
+    <div class="hint" id="hint">scroll</div>
+  </div>
 </section>
 
 <section class="story" id="story"></section>
 
-<div class="head fade" id="work"><h2 id="gTitle"></h2><span id="count"></span></div>
+<div class="head fade" id="work"><h2 id="gTitle"></h2><span><i class="rec"></i><b id="count" style="font-weight:400"></b></span></div>
 <main class="gallery" id="gallery"></main>
 
-<section class="end fade">
+<section class="end fade" id="end">
+  <div class="mini" aria-hidden="true"><span class="c a"></span><span class="c b"></span><span class="d"></span></div>
   <h2 id="endTitle"></h2>
   <p id="endText"></p>
   <a id="contact" target="_blank" rel="noopener"></a>
 </section>
 
-<footer><span id="copy"></span><span id="name2"></span></footer>
+<footer><span id="copy"></span><img src="brand/logo-white.svg" alt="the tapasya project"></footer>
 
 <div class="lb" id="lb" aria-hidden="true">
   <div class="num" id="num"></div>
@@ -195,52 +243,119 @@ const PHOTOS = [
 
 <script>
 const $ = id => document.getElementById(id);
+const GEO = {"vb": [3.2, -70.10000000000001, 598.6999999999999, 91.10000000000001], "frame": [-38.8, -100.10000000000001, 643.9, 51.0], "L": 30.0, "t": 3.0, "D": 20.0, "gap": 16.0};
 
-/* Text */
-document.title = SITE.name;
-$('brand').textContent = SITE.name;
-$('h1').textContent = SITE.name;
+/* ---------- Text ---------- */
 $('tag').textContent = SITE.tagline;
 $('gTitle').textContent = SITE.galleryTitle;
 $('count').textContent = `${PHOTOS.length} frames. And counting.`;
 $('endTitle').textContent = SITE.endTitle;
 $('endText').textContent = SITE.endText;
 if (SITE.contact) { $('contact').href = SITE.contact; $('contact').textContent = SITE.contactLabel; } else $('contact').remove();
-$('copy').textContent = `© ${new Date().getFullYear()} Tapasyatanu Dash`;
-$('name2').textContent = SITE.name;
-
+$('copy').textContent = `© ${new Date().getFullYear()} Tapasya`;
 SITE.story.forEach(([line, cls]) => {
-  const p = document.createElement('p');
-  p.textContent = line;
-  if (cls) p.className = cls;
-  $('story').appendChild(p);
+  const p = document.createElement('p'); p.textContent = line; if (cls) p.className = cls; $('story').appendChild(p);
 });
+$('cover').src = SITE.cover;
 
-/* Hero */
-const cover = $('cover');
-cover.onload = () => { cover.classList.add('ready'); setTimeout(() => { $('h1').classList.add('in'); }, 300); setTimeout(() => { $('tag').classList.add('in'); }, 600); };
-cover.onerror = cover.onload;
-cover.src = SITE.cover;
+/* ---------- Opening animation ---------- */
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const seg = (p, a, b) => clamp((p - a) / (b - a));                 // progress of p within [a,b]
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const back = t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* Story lines light up when they reach the middle of the screen */
-const lit = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('lit', e.isIntersecting)),
-  { rootMargin: '-38% 0px -38% 0px' });
+const intro = $('top'), stage = $('stage'), title = $('title'), photo = $('photo');
+const ctl = $('ctl'), cbr = $('cbr'), orb = $('orb'), pop = $('pop'), tag = $('tag'), hint = $('hint'), nav = $('nav');
+let L = {};   // layout in px, recomputed on resize
+
+function layout() {
+  const W = stage.clientWidth, H = stage.clientHeight;
+  const tw = title.offsetWidth, k = tw / GEO.vb[2], th = GEO.vb[3] * k;
+  const cx = W / 2, cy = H / 2;
+  const left = cx - tw / 2, top = cy - th / 2;              // title box on screen
+  const X = u => left + (u - GEO.vb[0]) * k, Y = u => top + (u - GEO.vb[1]) * k;
+  const M = clamp(Math.min(W, H) * .16, 60, 104);           // size of the closed frame
+  L = {
+    W, H, cx, cy, k,
+    open:   { x1: X(GEO.frame[0]), y1: Y(GEO.frame[1]), x2: X(GEO.frame[2]), y2: Y(GEO.frame[3]), len: Math.max(10, GEO.L * k), t: Math.max(1.2, GEO.t * k) },
+    closed: { x1: cx - M / 2, y1: cy - M / 2, x2: cx + M / 2, y2: cy + M / 2, len: M * .42, t: 1.5 },
+    orb: M * .2,
+    popD: Math.max(7, GEO.D * k),
+  };
+  L.popX = L.open.x2 + GEO.gap * k; L.popY = L.open.y2 - L.open.t / 2 - L.popD / 2;
+  title.style.marginLeft = `${-tw / 2}px`; title.style.marginTop = `${-th / 2}px`;
+  orb.style.width = orb.style.height = `${L.orb}px`;
+  pop.style.width = pop.style.height = `${L.popD}px`;
+  tag.style.top = `${L.open.y2 + Math.max(28, 40 * k * 1.2)}px`;
+  frame();
+}
+
+function frame() {
+  let p = reduced ? .66 : clamp(-intro.getBoundingClientRect().top / (intro.offsetHeight - L.H));
+
+  // 1. Frame opens (0.04 → 0.46)
+  const o = ease(seg(p, .04, .46)), c = L.closed, f = L.open;
+  const x1 = lerp(c.x1, f.x1, o), y1 = lerp(c.y1, f.y1, o), x2 = lerp(c.x2, f.x2, o), y2 = lerp(c.y2, f.y2, o);
+  const len = lerp(c.len, f.len, o), t = lerp(c.t, f.t, o);
+  for (const [el, x, y] of [[ctl, x1, y1], [cbr, x2 - len, y2 - len]]) {
+    el.style.width = el.style.height = `${len}px`;
+    el.style.borderWidth = '0'; el.style[el === ctl ? 'borderLeftWidth' : 'borderRightWidth'] = `${t}px`;
+    el.style[el === ctl ? 'borderTopWidth' : 'borderBottomWidth'] = `${t}px`;
+    el.style.transform = `translate(${x}px, ${y}px)`;
+  }
+
+  // 2. Photo fades in inside the opening frame (0.08 → 0.45)
+  const ph = ease(seg(p, .08, .45));
+  photo.style.opacity = ph;
+  photo.style.transform = `scale(${lerp(1.14, 1, ph)})`;
+
+  // 3. Dot grows and melts into the title (0.12 → 0.42)
+  const m = seg(p, .12, .42);
+  orb.style.opacity = 1 - ease(m);
+  orb.style.transform = `translate(${L.cx - L.orb / 2}px, ${L.cy - L.orb / 2}px) scale(${1 + ease(m) * 7})`;
+  const ti = ease(seg(p, .22, .46));
+  title.style.opacity = ti;
+  title.style.transform = `scale(${lerp(.9, 1, ti)})`;
+
+  // 4. A small dot pops out past the corner — the logo (0.48 → 0.6)
+  pop.style.transform = `translate(${L.popX}px, ${L.popY}px) scale(${back(seg(p, .48, .6)) * (seg(p, .48, .6) > 0 ? 1 : 0)})`;
+
+  // 5. Tagline (0.56 → 0.68)
+  tag.style.opacity = ease(seg(p, .56, .68));
+  tag.style.transform = `translateY(${lerp(12, 0, ease(seg(p, .56, .68)))}px)`;
+
+  // 6. Everything fades out into the story (0.8 → 1)
+  const out = 1 - ease(seg(p, .8, 1));
+  for (const el of [ctl, cbr, title, tag]) el.style.opacity = (el === title ? ti : el === tag ? +tag.style.opacity : 1) * out;
+  pop.style.opacity = out; photo.style.opacity = ph * out;
+
+  hint.style.opacity = reduced ? 0 : 1 - seg(p, 0, .05);
+  nav.classList.toggle('show', reduced ? window.scrollY > L.H * .6 : p >= 1);
+}
+
+let ticking = false;
+addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { frame(); ticking = false; }); } }, { passive: true });
+addEventListener('resize', layout);
+layout();
+
+/* ---------- Story lines light up in the middle of the screen ---------- */
+const lit = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('lit', e.isIntersecting)), { rootMargin: '-38% 0px -38% 0px' });
 document.querySelectorAll('.story p').forEach(p => lit.observe(p));
 
-/* Generic fade-ins */
-const fader = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); fader.unobserve(e.target); } }),
-  { rootMargin: '0px 0px -10% 0px' });
+/* ---------- Fade-ins ---------- */
+const fader = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); fader.unobserve(e.target); } }), { rootMargin: '0px 0px -15% 0px' });
 document.querySelectorAll('.head.fade, .end.fade').forEach(el => fader.observe(el));
 
-/* Gallery */
+/* ---------- Gallery ---------- */
 PHOTOS.forEach((p, i) => {
   const tile = document.createElement('figure');
   tile.className = 'tile fade';
   tile.style.flexBasis = 'calc(var(--row) * 1.5)';
   tile.style.transitionDelay = `${(i % 3) * 80}ms`;
   const img = new Image();
-  img.loading = 'lazy';
-  img.alt = p.caption || '';
+  img.loading = 'lazy'; img.alt = p.caption || '';
   img.onload = () => { const r = img.naturalWidth / img.naturalHeight; tile.style.flexBasis = `calc(var(--row) * ${r})`; tile.style.flexGrow = r; };
   img.src = p.src;
   tile.appendChild(img);
@@ -249,16 +364,14 @@ PHOTOS.forEach((p, i) => {
   fader.observe(tile);
 });
 
-/* Lightbox */
+/* ---------- Lightbox ---------- */
 const lb = $('lb'), lbImg = $('lbImg');
 let cur = 0;
 function show(i) {
   cur = (i + PHOTOS.length) % PHOTOS.length;
   const p = PHOTOS[cur];
   lbImg.classList.add('fading');
-  const pre = new Image();
-  pre.onload = () => { lbImg.src = p.src; lbImg.classList.remove('fading'); };
-  pre.src = p.src;
+  const pre = new Image(); pre.onload = () => { lbImg.src = p.src; lbImg.classList.remove('fading'); }; pre.src = p.src;
   $('lbCap').textContent = p.caption || '';
   $('num').textContent = `${cur + 1} of ${PHOTOS.length}`;
   lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false');
@@ -278,12 +391,7 @@ document.addEventListener('keydown', e => {
 });
 let x0 = null;
 lb.addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
-lb.addEventListener('touchend', e => {
-  if (x0 === null) return;
-  const dx = e.changedTouches[0].clientX - x0;
-  if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1));
-  x0 = null;
-});
+lb.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); x0 = null; });
 </script>
 </body>
 </html>
