@@ -112,7 +112,7 @@
 <script>
 const SITE = {
   name:    "the tapasya project",
-  tagline: "In search of one photograph.",
+  tagline: "In search of that one photograph.",
 
   // The big opening photo. Pick your strongest wide shot.
   cover:   "https://picsum.photos/id/1036/2400/1600",
@@ -123,10 +123,11 @@ const SITE = {
     ["Hi, I'm Tapasya."],
     ["I want to take a photograph."],
     ["Just one."],
-    ["I haven't found that frame yet.", "small"],
+    ["But I haven't found that frame...yet.", "small"],
     ["So until I do — and I will —", "small"],
     ["I'll keep clicking.", "small"],
-    ["Here's to the search.", "final"],
+    ["This is that search manifest.", "small"],
+    ["This is the tapasya project.", "final"],
   ],
 
   galleryTitle: "The search so far.",
@@ -205,7 +206,7 @@ $('count').textContent = `${PHOTOS.length} frames. And counting.`;
 $('endTitle').textContent = SITE.endTitle;
 $('endText').textContent = SITE.endText;
 if (SITE.contact) { $('contact').href = SITE.contact; $('contact').textContent = SITE.contactLabel; } else $('contact').remove();
-$('copy').textContent = `© ${new Date().getFullYear()} Tapasya`;
+$('copy').textContent = `© ${new Date().getFullYear()} Tapasyatanu Dash`;
 $('name2').textContent = SITE.name;
 
 SITE.story.forEach(([line, cls]) => {
