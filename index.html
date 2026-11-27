@@ -24,6 +24,8 @@
   html { scroll-behavior: smooth; }
   body { background: #000; color: var(--white); font-family: var(--font); -webkit-font-smoothing: antialiased; }
   a { color: inherit; text-decoration: none; }
+  img { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .tile img { pointer-events: none; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
   /* ---------- Nav (appears after the opening) ---------- */
@@ -142,7 +144,17 @@
 const SITE = {
   tagline: "In search of that one photograph.",
 
-  // The photo that appears inside the opening frame. Pick your strongest wide shot.
+  // Where your photos live on GitHub. The site reads this folder by itself:
+  // just upload photos into it — no need to list them anywhere.
+  //   • Name files so newer ones sort later, e.g. tapasya-0001.jpg, tapasya-0002.jpg
+  //     (newest is shown first).
+  //   • Optional caption after two dashes: tapasya-0012--pangong-2025.jpg → "pangong 2025"
+  //   • A file called cover.jpg in the folder becomes the opening photo (and stays out of the gallery).
+  githubUser:  "tapasyatanu",
+  githubRepo:  "tapasyatanu.github.io",
+  photoFolder: "photos",
+
+  // Opening photo to use until you upload a cover.jpg
   cover:   "https://picsum.photos/id/1036/2400/1600",
 
   // The story. Each line lights up as you scroll.
@@ -161,16 +173,15 @@ const SITE = {
 
   galleryTitle: "So far...",
 
-  endTitle: "Still looking...",
-  endText:  "That photograph is still out there. Somewhere. Someday.",
+  endTitle: "Still looking.",
+  endText:  "The frame is out there. Here's to the journey.",
   contact:  "",      // e.g. "https://instagram.com/yourhandle" — leave "" to hide
   contactLabel: "Follow the search ›",
 };
 
-// Your photos. Put files in a "photos" folder and list them like:
-//   { src: "photos/ladakh-lake.jpg", caption: "Pangong, 2025" },
-// Sizes and orientations are worked out automatically. Delete these samples.
-const PHOTOS = [
+// Sample photos, shown only until your photos folder has something in it.
+// You can leave these alone.
+let PHOTOS = [
   { src: "https://picsum.photos/id/1015/1600/1067", caption: "" },
   { src: "https://picsum.photos/id/1027/1000/1500", caption: "" },
   { src: "https://picsum.photos/id/1043/2400/800",  caption: "" },
@@ -250,7 +261,6 @@ const GEO = {"vb": [3.2, -70.10000000000001, 598.6999999999999, 91.1000000000000
 /* ---------- Text ---------- */
 $('tag').textContent = SITE.tagline;
 $('gTitle').textContent = SITE.galleryTitle;
-$('count').textContent = `${PHOTOS.length} frames. And counting.`;
 $('endTitle').textContent = SITE.endTitle;
 $('endText').textContent = SITE.endText;
 if (SITE.contact) { $('contact').href = SITE.contact; $('contact').textContent = SITE.contactLabel; } else $('contact').remove();
@@ -258,7 +268,6 @@ $('copy').textContent = `© ${new Date().getFullYear()} Tapasyatanu Dash`;
 SITE.story.forEach(([line, cls]) => {
   const p = document.createElement('p'); p.textContent = line; if (cls) p.className = cls; $('story').appendChild(p);
 });
-$('cover').src = SITE.cover;
 
 /* ---------- Opening animation ---------- */
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -350,21 +359,65 @@ document.querySelectorAll('.story p').forEach(p => lit.observe(p));
 const fader = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); fader.unobserve(e.target); } }), { rootMargin: '0px 0px -15% 0px' });
 document.querySelectorAll('.head.fade, .end.fade').forEach(el => fader.observe(el));
 
-/* ---------- Gallery ---------- */
-PHOTOS.forEach((p, i) => {
-  const tile = document.createElement('figure');
-  tile.className = 'tile fade';
-  tile.style.flexBasis = 'calc(var(--row) * 1.5)';
-  tile.style.transitionDelay = `${(i % 3) * 80}ms`;
-  const img = new Image();
-  img.loading = 'lazy'; img.alt = p.caption || '';
-  img.onload = () => { const r = img.naturalWidth / img.naturalHeight; tile.style.flexBasis = `calc(var(--row) * ${r})`; tile.style.flexGrow = r; };
-  img.src = p.src;
-  tile.appendChild(img);
-  tile.onclick = () => show(i);
-  $('gallery').appendChild(tile);
-  fader.observe(tile);
-});
+/* ---------- Gallery: reads the photos folder from GitHub ---------- */
+const IMG = /\.(jpe?g|png|webp|avif)$/i;
+const toCaption = name => { const m = name.replace(IMG, '').split('--')[1]; return m ? m.replace(/[-_]+/g, ' ').trim() : ''; };
+
+function render(list) {
+  PHOTOS = list;
+  $('gallery').innerHTML = '';
+  $('count').textContent = `${PHOTOS.length} frames. And counting.`;
+  PHOTOS.forEach((p, i) => {
+    const tile = document.createElement('figure');
+    tile.className = 'tile fade';
+    tile.style.flexBasis = 'calc(var(--row) * 1.5)';
+    tile.style.transitionDelay = `${(i % 3) * 80}ms`;
+    const img = new Image();
+    img.loading = 'lazy'; img.alt = p.caption || ''; img.draggable = false;
+    img.onload = () => { const r = img.naturalWidth / img.naturalHeight; tile.style.flexBasis = `calc(var(--row) * ${r})`; tile.style.flexGrow = r; };
+    img.src = p.src;
+    tile.appendChild(img);
+    tile.onclick = () => show(i);
+    $('gallery').appendChild(tile);
+    fader.observe(tile);
+  });
+}
+
+function fromFiles(files) {
+  const imgs = files.filter(f => f.type === 'file' && IMG.test(f.name));
+  const cover = imgs.find(f => /^cover\./i.test(f.name));
+  const photos = imgs.filter(f => f !== cover)
+    .sort((a, b) => b.name.localeCompare(a.name, undefined, { numeric: true }))   // newest first
+    .map(f => ({ src: `${SITE.photoFolder}/${f.name}`, caption: toCaption(f.name) }));
+  return { cover: cover ? `${SITE.photoFolder}/${cover.name}` : '', photos };
+}
+
+function apply(data) {
+  $('cover').src = data && data.cover ? data.cover : SITE.cover;
+  render(data && data.photos.length ? data.photos : PHOTOS);
+}
+
+(async () => {
+  const KEY = 'ttp-photos';
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  try {
+    if (cached) apply(cached);                               // show last known photos straight away
+    const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 6000);
+    const r = await fetch(`https://api.github.com/repos/${SITE.githubUser}/${SITE.githubRepo}/contents/${SITE.photoFolder}`, { signal: ctrl.signal });
+    if (r.status === 404) return apply(null);                // no photos folder yet → samples
+    if (!r.ok) throw new Error(r.status);
+    const data = fromFiles(await r.json());
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+    apply(data);
+  } catch (e) {
+    apply(cached);                                           // GitHub busy or offline → last known list
+  }
+})();
+
+/* ---------- Discourage saving ---------- */
+document.addEventListener('contextmenu', e => { if (e.target.closest('.tile, .lb, .photo, img')) e.preventDefault(); });
+document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
 
 /* ---------- Lightbox ---------- */
 const lb = $('lb'), lbImg = $('lbImg');
