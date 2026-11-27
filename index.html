@@ -6,9 +6,10 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#000000">
 <title>the tapasya project</title>
-<link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="brand/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
+<link rel="icon" href="brand/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="brand/favicon-32.png?v=2" sizes="32x32">
+<link rel="icon" href="brand/favicon-48.png?v=2" sizes="48x48">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,14 +30,14 @@
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
   /* ---------- Nav (appears after the opening) ---------- */
-  .nav { position: fixed; inset: 0 0 auto 0; z-index: 10; height: 48px;
+  .nav { position: fixed; inset: 0 0 auto 0; z-index: 10; height: 62px;
          background: rgba(22,22,23,.72); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
          border-bottom: 1px solid rgba(255,255,255,.06);
          transform: translateY(-100%); transition: transform .5s var(--ease); }
   .nav.show { transform: none; }
   .nav .in { max-width: 1024px; height: 100%; margin: 0 auto; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; }
-  .nav .brand img { height: 22px; display: block; }
-  .nav nav a { font-size: 12px; color: rgba(245,245,247,.8); margin-left: 28px; }
+  .nav .brand img { height: 38px; display: block; }
+  .nav nav a { font-size: 14px; color: rgba(245,245,247,.8); margin-left: 28px; }
   .nav nav a:hover { color: #fff; }
 
   /* ---------- Opening: scroll-driven ---------- */
@@ -104,7 +105,7 @@
   .end a { display: inline-block; margin-top: 36px; font-size: 17px; color: var(--blue); }
 
   footer { border-top: 1px solid #1d1d1f; max-width: 1024px; margin: 0 auto; padding: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--grey); }
-  footer img { height: 14px; display: block; opacity: .7; }
+  footer img { height: 24px; display: block; opacity: .7; }
 
   /* ---------- Lightbox ---------- */
   .lb { position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,.96); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
@@ -123,6 +124,7 @@
   @media (max-width: 734px) {
     :root { --row: 180px; --gap: 6px; --radius: 12px; }
     .nav nav a { margin-left: 18px; }
+    .nav { height: 52px; } .nav .brand img { height: 28px; }
     .title { width: 68vw; }
     .lb .prev, .lb .next { display: none; }
     .tile::before, .tile::after { display: none; }
@@ -146,12 +148,12 @@ const SITE = {
 
   // Where your photos live on GitHub. The site reads this folder by itself:
   // just upload photos into it — no need to list them anywhere.
-  //   • Name files so newer ones sort later, e.g. -0001.jpg, -0002.jpg
+  //   • Name files so newer ones sort later, e.g. tapasya-0001.jpg, tapasya-0002.jpg
   //     (newest is shown first).
-  //   • Optional caption after two dashes: -0012--pangong-2025.jpg → "pangong 2025"
+  //   • Optional caption after two dashes: tapasya-0012--pangong-2025.jpg → "pangong 2025"
   //   • A file called cover.jpg in the folder becomes the opening photo (and stays out of the gallery).
-  githubUser:  "tanu",
-  githubRepo:  "tanu.github.io",
+  githubUser:  "tapasyatanu",
+  githubRepo:  "tapasyatanu.github.io",
   photoFolder: "photos",
 
   // Opening photo to use until you upload a cover.jpg
@@ -160,7 +162,7 @@ const SITE = {
   // The story. Each line lights up as you scroll.
   // Add "small" to make a line smaller, "final" for the closing line.
   story: [
-    ["Hi, I'm . And I want to capture a photograph.", "small"],
+    ["Hi, I'm Tapasya. And I want to capture a photograph.", "small"],
     ["\u00A0"],
     ["Just one."],
     ["\u00A0"],
@@ -168,7 +170,7 @@ const SITE = {
     ["So until I do — and I will —", "small"],
     ["I'll keep searching.", "small"],
     ["Here's that search manifesto.", "small"],
-    ["Here's the  project.", "final"],
+    ["Here's the tapasya project.", "final"],
   ],
 
   galleryTitle: "So far...",
@@ -200,13 +202,13 @@ let PHOTOS = [
 
 <header class="nav" id="nav">
   <div class="in">
-    <a class="brand" href="#top"><img src="brand/logo-white.svg" alt="the  project"></a>
+    <a class="brand" href="#top"><img src="brand/logo-white.svg" alt="the tapasya project"></a>
     <nav><a href="#story">story</a><a href="#work">work</a></nav>
   </div>
 </header>
 
 <section class="intro" id="top">
-  <h1 class="sr">the  project</h1>
+  <h1 class="sr">the tapasya project</h1>
   <div class="stage" id="stage">
     <div class="photo" id="photo"><img id="cover" alt=""></div>
     <div class="title" id="title">
@@ -243,7 +245,7 @@ let PHOTOS = [
   <a id="contact" target="_blank" rel="noopener"></a>
 </section>
 
-<footer><span id="copy"></span><img src="brand/logo-white.svg" alt="the  project"></footer>
+<footer><span id="copy"></span><img src="brand/logo-white.svg" alt="the tapasya project"></footer>
 
 <div class="lb" id="lb" aria-hidden="true">
   <div class="num" id="num"></div>
